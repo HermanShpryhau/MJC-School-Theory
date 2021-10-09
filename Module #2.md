@@ -59,7 +59,7 @@ An IoC container is a common characteristic of frameworks that implement IoC. In
 
 ### Spring Bean lifecycle.
 
-/media/bean-lifecycle.png
+![](media/bean-lifycycle.png)
 
 1. Spring instantiates the bean.
 2. Spring injects values and bean references into the bean’s properties.
