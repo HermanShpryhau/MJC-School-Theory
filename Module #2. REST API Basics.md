@@ -123,7 +123,53 @@ Drawbacks of filed-based DI:
 2. It's really easy to keep adding multiple dependencies using this approach. If we were using constructor injection, having multiple arguments would make us think that the class does more than one thing, which can violate the Single Responsibility Principle.
 
 ### What is the difference between `@Repository`, `@Component`, `@Service` and `@Controller` annotations?
+`@Repository` and `@Service` are just aliases for `@Component` and only act as specialization for `@Component`.
+
+`@Controller` is also a specialization for `@Component` but is processed differently under the hood. As a consequence annotations such as `@RequestMapping` will only work with `@Controller`s.
 
 ### Spring Bean scopes. What scopes exist out of the box? Is it possible to create a custom scope?
+> [Baeldung article](https://www.baeldung.com/spring-bean-scopes)
+
+The latest version of the Spring framework defines 6 types of scopes:
+1. singleton
+2. prototype
+3. request
+4. session
+5. application
+6. websocket
+
+The last four scopes mentioned, request, session, application and websocket, are only available in a web-aware application.
+
+The scope of bean is defined by `@Scope` annotation:
+```java
+@Bean
+@Scope("prototype")
+// @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public ExampleBean exampleBean() {
+    return new ExampleBean();
+}
+```
+
+#### Singleton Scope
+When we define a bean with the **singleton scope**, the container creates a single instance of that bean; all requests for that bean name will return the same object, which is cached. Any modifications to the object will be reflected in all references to the bean. This scope is the default value if no other scope is specified.
+
+#### Prototype Scope
+A bean with the **prototype scope** will return a different instance every time it is requested from the container.
+
+#### Request Scope
+The **request scope** creates a bean instance for a single HTTP request.
+
+#### Session Scope
+The **session scope** creates a bean instance for an HTTP session.
+
+#### Application Scope
+The **application scope** creates the bean instance for the lifecycle of a **Servlet Context**.
+
+This is similar to the singleton scope, but there is a very important difference with regard to the scope of the bean.
+
+When beans are application scoped, the same instance of the bean is shared across multiple servlet-based applications running in the same **Servlet Context**, while singleton scoped beans are scoped to a single application context only.
+
+#### WebSocket Scope
+When first accessed, **WebSocket scoped** beans are stored in the WebSocket session attributes. The same instance of the bean is then returned whenever that bean is accessed during the entire WebSocket session. We can also say that it exhibits singleton behavior, but limited to a WebSocket session only.
 
 ### How to add several configurations in application (db, connection pool settings) and choose one of them at startup?
