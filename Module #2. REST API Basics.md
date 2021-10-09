@@ -59,7 +59,7 @@ An IoC container is a common characteristic of frameworks that implement IoC. In
 
 ### Spring Bean lifecycle.
 
-![](media/bean-lifecycle.png)\
+![](media/bean-lifecycle.png)
 
 1. Spring instantiates the bean.
 2. Spring injects values and bean references into the bean’s properties.
@@ -73,7 +73,7 @@ An IoC container is a common characteristic of frameworks that implement IoC. In
 10. If the bean implements the `DisposableBean` interface, Spring calls its `destroy()` method. Likewise, if the bean was declared with a destroy-method, the specified method is called.
 
 
-### Injection with annotations. What types exist? Advantages and disadvantages of those types? How did you choose the injection approach?
+### Injection with annotations. What types exist? Advantages and disadvantages of those types? 
 
 > [Baeldung article](https://www.baeldung.com/inversion-control-and-dependency-injection-in-spring)
 
@@ -221,3 +221,63 @@ env.setActiveProfiles("someProfile");
 ```
 -Dspring.profiles.active=dev
 ```
+
+## REST
+### HTTP methods for Rest API.
+
+| HTTP Method | Meaning |
+|:--|:--|
+| POST | Create |
+| GET | Read |
+| PUT | Update entirely/replace |
+| PATCH | Update partially/modify |
+| DELETE | Delete |
+
+### What does Richardson's maturity model describes?
+The RMM can be employed to determine how well a Web service architecture adheres to REST principles. It categorizes a Web API into four levels (from 0 to 3) with each higher level corresponding to a more complete adherence to REST design. The next level also contains all the characteristics of the previous one.
+
+#### Level 0 : The Swamp of POX
+The lowest level of the model describes a Web API with a single URI (typically POST over HTTP) accepting all the range of operations supported by the service. Resources in this form cannot be well-defined. Messaging is done in XML, JSON, or other text formats. These are typical RPC POX and many SOAP services.
+
+#### Level 1 : Resources
+Introduces resources and allows to make requests to individual URIs (still all typically POST) for separate actions instead of exposing one universal endpoint (API). The API resources are still generalized but it is possible to identify the scope of each one.
+Level One design is not RESTful, yet it is organizing the API in the direction of becoming one.
+
+#### Level 2 : HTTP verbs
+The system starts making use of HTTP Verbs. This allows to further specialize the resource and thus narrow down the functionality of each individual operation with the service. The principle separation at this level consists in splitting a given resource into two – one request for obtaining data only (GET), the other for modifying the data (POST). Further granularization is also possible. GET requests only fetch data, POST/PUT calls introduce new and update existing data, DELETE requests remove or otherwise invalidate previous actions. One drawback of providing a distributed service with more than GET and POST per resource might be growing complication of using such a system.
+
+#### Level 3 : Hypermedia controls
+The last level introduces the hypermedia representation. Also called HATEOAS (Hypermedia As The Engine of Application State), these are elements embedded in the response messages of resources which allow to establish a relation between individual data entities returned from and pass to the APIs. For instance, a GET request to a hotel reservation system might return a number of available rooms along with hypermedia links (these would be html hyperlink controls in the early days of the model) allowing to book specific rooms.
+
+### Idempotency of methods. Idempotent REST methods.
+Idempotent operations produce the same result even when the operation is repeated many times.
+
+Only POST method is not Idempotent.
+
+### Do you know some practices for API versioning?
+API versioning is the practice of transparently managing changes to your API.
+
+#### URI Path
+```
+http://www.example.com/api/v1/products
+```
+
+This strategy involves putting the version number in the path of the URI, and is often done with the prefix "v".
+
+URI path versioning implies orchestrated releases of application versions that will require one of two approaches: maintaining one version while developing a new one or forcing consumers to wait for new resources until the new version is released. It also means you'd need to carry over any non-changed endpoints from version to version. However, for APIs with relatively low volatility, it's still a decent option.
+
+#### Query Params
+```
+http://www.example.com/api/products?version=1
+```
+
+This type of versioning adds a query param to the request that indicates the version. Very flexible in terms of requesting the version of the resource you'd like at the "leaf" level, but it holds no notion of the overall API's version and lends itself to the same out-of-sync issues mentioned in the above comment on endpoint-level versioning of the URI path.
+
+#### Header
+```
+Accept: version=1.0
+```
+
+The header approach is one that provides more granularity in serving up the requested version of any given resource.
+
+However, it's buried in the request object and isn't as transparent as the URI path option. It's also still hard to tell whether 1.0 refers to the version of the endpoint or the API itself.
