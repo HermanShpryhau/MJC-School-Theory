@@ -173,3 +173,51 @@ When beans are application scoped, the same instance of the bean is shared acros
 When first accessed, **WebSocket scoped** beans are stored in the WebSocket session attributes. The same instance of the bean is then returned whenever that bean is accessed during the entire WebSocket session. We can also say that it exhibits singleton behavior, but limited to a WebSocket session only.
 
 ### How to add several configurations in application (db, connection pool settings) and choose one of them at startup?
+> [Baeldung article](https://www.baeldung.com/spring-profiles)
+
+Profiles allow us to map our beans to different profiles — for example, dev, test, and prod.
+
+The `@Profile` annotation is used to map the bean to that particular profile; the annotation simply takes the names of one (or multiple) profiles.
+```java
+@Component
+@Profile("dev")
+public class DevDatasourceConfig
+```
+
+Profiles can be set in different ways. Here are some of them:
+
+#### Via `WebApplicationInitializer`
+```java
+@Configuration
+public class MyWebApplicationInitializer 
+  implements WebApplicationInitializer {
+
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+ 
+        servletContext.setInitParameter(
+          "spring.profiles.active", "dev");
+    }
+}
+```
+
+#### Via ConfigurableEnvironment
+```java
+@Autowired
+private ConfigurableEnvironment env;
+...
+env.setActiveProfiles("someProfile");
+```
+
+#### As context Parameter in web.xml
+```xml
+<context-param>
+    <param-name>spring.profiles.active</param-name>
+    <param-value>dev</param-value>
+</context-param>
+```
+
+#### As JVM System Parameter
+```
+-Dspring.profiles.active=dev
+```
