@@ -324,5 +324,75 @@ However, it's buried in the request object and isn't as transparent as the URI p
 ![](media/db-index-3.png)
 
 ### Types of keys. Why we need a key?
+**Ключ** — идентификатор, являющийся частью набора элементов данных. В контексте реляционных СУБД ключом считается совокупность атрибутов отношения (или отдельный атрибут), обладающий определёнными, характерными для данного вида ключа свойствами.
+
+**Суперключ** — подмножество атрибутов отношения, уникально идентифицирующее любой кортеж. Суперключ часто называют надмножеством потенциального ключа, т.к. он может содержать в себе «лишние» элементы, удаление которых не приведёт к потере уникальности значений (т.к. суперключ не обладает свойством несократимости).
+
+**Потенциальный ключ** — несократимое подмножество атрибутов отношения, уникально идентифицирующее любой кортеж. Иными словами, потенциальный ключ — это такой суперключ, в котором нет «лишних» элементов. Как правило, один из потенциальных ключей в дальнейшем становится первичным ключом (а остальные потенциальные ключи становятся альтернативными ключами).
+
+**Альтернативный ключ** — потенциальный ключ отношения, не выбранный в качестве первичного ключа.
+
+**Первичный ключ (PK)** — потенциальный ключ, выбранный в качестве основного средства гарантированной идентификации кортежей отношения.
+
+**Простой ключ** — ключ, состоящий из одного атрибута отношения.
+
+**Составной ключ** — ключ, состоящий из двух и более атрибутов отношения.
+
+**Естественный ключ** — ключ, построенный на множестве атрибутов отношения, несущих смысловую нагрузку.
+
+**Искусственный ключ** — ключ, построенный на атрибуте, искусственно добавленном в отношение с единственной целью — гарантированно идентифицировать кортежи отношения.
+
+**Интеллектуальный ключ** — ключ, значения которого не только идентифицируют кортежи отношения, но и несут дополнительную информацию.
+
+**Внешний ключ (FK)** — атрибут (или группа атрибутов) отношения, содержащий в себе копии значений первичного ключа другого отношения.
+
+**Рекурсивный внешний ключ (RFK)** — атрибут (или группа атрибутов) отношения, содержащий в себе копии значений первичного ключа этого же отношения.
 
 ### What is transaction? What is ACID? What is Isolation levels (reading)? What propagation types do you know?
+**Транзакция** — набор операций с базой данных, который представляет собой неделимую логическую единицу. Такой набор операций может быть выполнен либо целиком и успешно (с соблюдением всех правил консистентности базы данных и независимо от параллельно выполняемых транзакций), либо не выполнен вообще (в таком случае ни одна из операций, входящих в данный набор, не должна произвести никаких изменений в базе данных).
+
+#### ACID
+**Атомарность (atomicity)** означает, что транзакция не может быть «выполнена частично», т.е. что всегда все её операции будут либо выполнены (все и до конца), либо не выполнены.
+
+**Консистентность (consistency)** означает, что успешно завершившаяся транзакция гарантированно сохраняет консистентность базы данных, т.е. фиксирует только допустимые результаты изменения данных (не противоречащие никаким ограничениям, реализованным на уровне СУБД или добавленным отдельно в базу данных в виде проверок, триггеров и т.д.).
+
+**Изолированность (isolation)** означает, что несколько выполняемых параллельно транзакций не должны влиять на результат выполнения друг друга.
+
+**Устойчивость (durability)** означает, что СУБД сама решает все «внутренние проблемы» и гарантирует, что после завершения транзакции (как успешного, так и неуспешного) все необходимые изменения были или зафиксированы, или отменены, и что база данных не вернётся в некое «промежуточное состояние».
+
+#### Transaction Isolation Level
+**Уровень изолированности транзакций (transaction isolation level)** — условное значение, показывающее, насколько внутреннее состояние базы данных в момент выполнения транзакции доступно другим, одновременно выполняемым транзакциям или насколько параллельно выполняемые транзакции «защищены» друг от друга.
+
+**Чтение неподтверждённых данных, грязное чтение (read uncommitted, dirty read)** — допускает чтение незафиксированных (т.е. до подтверждения или отмены транзакции) изменений — выполненных любой транзакцией (как той, что производит чтение, так и выполняющихся параллельно с ней).
+
+**Чтение подтверждённых данных (read committed)** — допускает чтение всех изменений, выполненных самой транзакцией, и только подтверждённых (зафиксированных) изменений, выполненных другими (параллельными) транзакциями.
+
+**Повторяющееся чтение (repeatable read)** — допускает только чтение изменений, выполненных самой транзакцией, а прочитанные ею данные становятся не- доступными для изменения параллельным транзакциям.
+
+**Снимок (snapshot)** — является частным (более высоким) случаем повторяющегося чтения, поддерживается не всеми СУБД, и допускает только чтение изменений, выполненных самой транзакцией, а прочитанные ею данные остаются доступны для изменения параллельным транзакциям (в этом состоит основное отличие от уровня повторяющегося чтения).
+
+**Сериализация (serializable)** — допускает только такое выполнение изменений данных, словно все модифицирующие данные транзакции выполняются не параллельно, а последовательно.
+Этот уровень обеспечивает отсутствие всех проблем, т.е. потерянных обновлений, грязного чтения, неповторяющегося чтения и фантомного чтения. Это самый надёжный в плане точности работы с данными уровень изолированности транзакций, но он же — и самый медленный с точки зрения производительности.
+
+#### Types of Propagation
+> [Baeldung article](https://www.baeldung.com/spring-transactional-propagation-isolation#transaction-propagations)
+
+1. **REQUIRED** is the default propagation. Spring checks if there is an active transaction, and if nothing exists, it creates a new one. Otherwise, the business logic appends to the currently active transaction.
+2. For **SUPPORTS**, Spring first checks if an active transaction exists. If a transaction exists, then the existing transaction will be used. If there isn't a transaction, it is executed non-transactional.
+3. When the propagation is **MANDATORY**, if there is an active transaction, then it will be used. If there isn't an active transaction, then Spring throws an exception.
+4. For transactional logic with **NEVER** propagation, Spring throws an exception if there's an active transaction.
+5. With **NOT_SUPPORTED** propagation if a current transaction exists, first Spring suspends it, and then the business logic is executed without a transaction.
+6. When the propagation is **REQUIRES_NEW**, Spring suspends the current transaction if it exists, and then creates a new one.
+7. For **NESTED** propagation, Spring checks if a transaction exists, and if so, it marks a save point. This means that if our business logic execution throws an exception, then the transaction rollbacks to this save point. If there's no active transaction, it works like REQUIRED.
+
+## General
+### Describe, how HTTP request is processed.
+![](media/request.png)
+
+1. Request goes to `DispatcherServlet`.
+2. `DispatcherServlet` decides on controller which will process the request with help of **handler mapping**.
+3. Once an appropriate controller has been chosen, `DispatcherServlet` sends the request to the chosen controller. At the controller, the request drops off its payload (the information submitted by the user) and waits while the controller processes that information. 
+4. Controller packages up the model data and identify the name of a view that should render the output. It then sends the request, along with the model and view name, back to the `DispatcherServlet`.
+5. The `DispatcherServlet` consults a **view resolver** to map the logical view name to a specific view implementation.
+6. Now that `DispatcherServlet` knows which view will render the result, the request’s job is almost over. Its final stop is at the **view implementation** where it delivers the model data.
+7. The **view** will use the model data to render output that will be carried back to the client by the response object
