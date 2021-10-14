@@ -427,6 +427,6 @@ System tests test the developed system as whole. For small apps this may be as s
 3. Once an appropriate controller has been chosen, `DispatcherServlet` sends the request to the chosen controller. At the controller, the request drops off its payload (the information submitted by the user) and waits while the controller processes that information. 
 4. Controller packages up the model data and identify the name of a view that should render the output. It then sends the request, along with the model and view name, back to the `DispatcherServlet`.
 5. The `DispatcherServlet` consults a **view resolver** to map the logical view name to a specific view implementation.
-6. Now that `DispatcherServlet` knows which view will render the result, the request’s job is almost over. Its final stop is at the **view implementation** where it delivers the model data.
+6. Now, that `DispatcherServlet` knows which view will render the result, the request’s job is almost over. Its final stop is at the **view implementation** where it delivers the model data.
 7. The **view** will use the model data to render output that will be carried back to the client by the response object
 
