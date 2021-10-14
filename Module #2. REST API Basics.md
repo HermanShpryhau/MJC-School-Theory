@@ -361,6 +361,12 @@ However, it's buried in the request object and isn't as transparent as the URI p
 **Устойчивость (durability)** означает, что СУБД сама решает все «внутренние проблемы» и гарантирует, что после завершения транзакции (как успешного, так и неуспешного) все необходимые изменения были или зафиксированы, или отменены, и что база данных не вернётся в некое «промежуточное состояние».
 
 #### Transaction Isolation Level
+Типичные проблемы, которые могут возникать при одновременном доступе к одним и тем же данным нескольких транзакций:
+1. **Потерянное обновление (lost update)** — сохраняются только те изменения данных, которые были выполнены позже всего.
+2. **Грязное чтение (dirty read)** — становится доступным временное состояние данных, которые в дальнейшем будут удалены или изменены в силу отмены работавшей с ними транзакции.
+3. **Неповторяющееся чтение (non-repeatable read)** — происходит изменение одних и тех же данных за время работы транзакции (т.е. при повторном чтении ра- нее прочитанных данных получается новый результат).
+4. **Фантомное чтение (phantom reads)** — происходит изменение количества строк, подпадающих под выборку (в силу добавления или удаления строк или изменения значений в их полях).
+
 **Уровень изолированности транзакций (transaction isolation level)** — условное значение, показывающее, насколько внутреннее состояние базы данных в момент выполнения транзакции доступно другим, одновременно выполняемым транзакциям или насколько параллельно выполняемые транзакции «защищены» друг от друга.
 
 **Чтение неподтверждённых данных, грязное чтение (read uncommitted, dirty read)** — допускает чтение незафиксированных (т.е. до подтверждения или отмены транзакции) изменений — выполненных любой транзакцией (как той, что производит чтение, так и выполняющихся параллельно с ней).
@@ -396,3 +402,11 @@ However, it's buried in the request object and isn't as transparent as the URI p
 5. The `DispatcherServlet` consults a **view resolver** to map the logical view name to a specific view implementation.
 6. Now that `DispatcherServlet` knows which view will render the result, the request’s job is almost over. Its final stop is at the **view implementation** where it delivers the model data.
 7. The **view** will use the model data to render output that will be carried back to the client by the response object
+
+### REST Principles
+1. **Uniform interface.** All API requests for the same resource should look the same, no matter where the request comes from. The REST API should ensure that the same piece of data, such as the name or email address of a user, belongs to only one uniform resource identifier (URI). Resources shouldn’t be too large but should contain every piece of information that the client might need.
+2. **Client-server decoupling.** In REST API design, client and server applications must be completely independent of each other. The only information the client application should know is the URI of the requested resource; it can't interact with the server application in any other ways. Similarly, a server application shouldn't modify the client application other than passing it to the requested data via HTTP.
+3. **Statelessness.** REST APIs are stateless, meaning that each request needs to include all the information necessary for processing it. In other words, REST APIs do not require any server-side sessions. Server applications aren’t allowed to store any data related to a client request.
+4. **Cacheability.** When possible, resources should be cacheable on the client or server side. Server responses also need to contain information about whether caching is allowed for the delivered resource. The goal is to improve performance on the client side, while increasing scalability on the server side.
+5. **Layered system architecture.** In REST APIs, the calls and responses go through different layers. As a rule of thumb, don’t assume that the client and server applications connect directly to each other. There may be a number of different intermediaries in the communication loop. REST APIs need to be designed so that neither the client nor the server can tell whether it communicates with the end application or an intermediary.
+6. **Code on demand (optional).** REST APIs usually send static resources, but in certain cases, responses can also contain executable code (such as Java applets). In these cases, the code should only run on-demand.
