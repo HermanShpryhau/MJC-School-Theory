@@ -282,6 +282,17 @@ The header approach is one that provides more granularity in serving up the requ
 
 However, it's buried in the request object and isn't as transparent as the URI path option. It's also still hard to tell whether 1.0 refers to the version of the endpoint or the API itself.
 
+## Engineering Excellence
+### Testing. What types of tests exist?
+#### Unit tests
+Unit tests are very low level, close to the source of your application. They consist in testing individual methods and functions of the classes, components or modules used by your software. Unit tests are in general quite cheap to automate and can be run very quickly by a continuous integration server.
+
+#### Integration tests
+Integration tests verify that different modules or services used by your application work well together. For example, it can be testing the interaction with the database or making sure that microservices work together as expected. These types of tests are more expensive to run as they require multiple parts of the application to be up and running.
+
+#### Functional tests
+Functional tests focus on the business requirements of an application. They only verify the output of an action and do not check the intermediate states of the system when performing that action.
+
 ## Database
 ### What is DB index? How does it work?
 Индексы почти полностью лежат в области физического уровня проектирования базы данных, и реляционная теория их почти не затрагивает.
