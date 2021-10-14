@@ -10,7 +10,6 @@
 In contrast with traditional programming, in which our custom code makes calls to a library, IoC enables a framework to take control of the flow of a program and make calls to our custom code. To enable this, frameworks use abstractions with additional behavior built in. If we want to add our own behavior, we need to extend the classes of the framework or plugin our own classes.
 
 The advantages of this architecture are:
-
 - decoupling the execution of a task from its implementation
 - making it easier to switch between different implementations
 - greater modularity of a program
@@ -20,7 +19,7 @@ We can achieve Inversion of Control through various mechanisms such as: *[Strate
 
 **Dependency injection** is a pattern we can use to implement IoC, where the control being inverted is setting an object's dependencies. Connecting objects with other objects, or “injecting” objects into other objects, is done by an assembler rather than by the objects themselves.
 
-An IoC container is a common characteristic of frameworks that implement IoC. In the Spring framework, the interface ApplicationContext represents the IoC container. The Spring container is responsible for instantiating, configuring and assembling objects known as beans, as well as managing their life cycles.
+An IoC container is a common characteristic of frameworks that implement IoC. In the Spring framework, the interface `ApplicationContext` represents the IoC container. The Spring container is responsible for instantiating, configuring and assembling objects known as beans, as well as managing their life cycles.
 
 ### How can we configure Spring context?
 > [*Baeldung article*](https://www.baeldung.com/spring-application-context)
@@ -53,7 +52,7 @@ An IoC container is a common characteristic of frameworks that implement IoC. In
 `ApplicationContext` implementations:
 - `AnnotationConfigApplicationContext` — Loads a Spring application context from one or more Java-based configuration classes
 - `AnnotationConfigWebApplicationContext` — Loads a Spring web application context from one or more Java-based configuration classes
-- `ClassPathXmlApplicationContext` — Loads a context definition from one or more XML files located in the classpath, treating context-definition files as class- path resources
+- `ClassPathXmlApplicationContext` — Loads a context definition from one or more XML files located in the classpath, treating context-definition files as classpath resources
 - `FileSystemXmlApplicationContext` — Loads a context definition from one or more XML files in the filesystem
 - `XmlWebApplicationContext` — Loads context definitions from one or more XML files contained in a web application
 
@@ -78,6 +77,8 @@ An IoC container is a common characteristic of frameworks that implement IoC. In
 > [Baeldung article](https://www.baeldung.com/inversion-control-and-dependency-injection-in-spring)
 
 #### Constructor-Based Dependency Injection
+> [Advantages of constructor-based injection](https://reflectoring.io/constructor-injection/)
+
 In the case of constructor-based dependency injection, the container will invoke a constructor with arguments each representing a dependency we want to set.
 
 Spring resolves each argument primarily by type, followed by name of the attribute, and index for disambiguation.
@@ -102,7 +103,7 @@ public class Store {
     
     public Store() {}
     
-    @Autowired
+    @Autowired(required = false)
     public setItem(Item item) {
         this.item = item;
     }
@@ -123,9 +124,13 @@ Drawbacks of filed-based DI:
 2. It's really easy to keep adding multiple dependencies using this approach. If we were using constructor injection, having multiple arguments would make us think that the class does more than one thing, which can violate the Single Responsibility Principle.
 
 ### What is the difference between `@Repository`, `@Component`, `@Service` and `@Controller` annotations?
-`@Repository` and `@Service` are just aliases for `@Component` and only act as specialization for `@Component`.
+> [Baeldung article](https://www.baeldung.com/spring-component-repository-service)
 
-`@Controller` is also a specialization for `@Component` but is processed differently under the hood. As a consequence annotations such as `@RequestMapping` will only work with `@Controller`s.
+`@Service` is just a alias for `@Component` and only acts as specialization of `@Component`.
+
+`@Repository` is also a specialization of `@Component`  but it’s job is to catch persistence-specific exceptions and re-throw them as one of Spring’s unified unchecked exceptions
+
+`@Controller` is another specialization for `@Component` but is processed differently under the hood. As a consequence annotations such as `@RequestMapping` will only work with `@Controller`s.
 
 ### Spring Bean scopes. What scopes exist out of the box? Is it possible to create a custom scope?
 > [Baeldung article](https://www.baeldung.com/spring-bean-scopes)
@@ -223,7 +228,17 @@ env.setActiveProfiles("someProfile");
 ```
 
 ## REST
-### HTTP methods for Rest API.
+
+
+### REST Principles
+1. **Uniform interface.** All API requests for the same resource should look the same, no matter where the request comes from. The REST API should ensure that the same piece of data, such as the name or email address of a user, belongs to only one uniform resource identifier (URI). Resources shouldn’t be too large but should contain every piece of information that the client might need.
+2. **Client-server decoupling.** In REST API design, client and server applications must be completely independent of each other. The only information the client application should know is the URI of the requested resource; it can't interact with the server application in any other ways. Similarly, a server application shouldn't modify the client application other than passing it to the requested data via HTTP.
+3. **Statelessness.** REST APIs are stateless, meaning that each request needs to include all the information necessary for processing it. In other words, REST APIs do not require any server-side sessions. Server applications aren’t allowed to store any data related to a client request.
+4. **Cacheability.** When possible, resources should be cacheable on the client or server side. Server responses also need to contain information about whether caching is allowed for the delivered resource. The goal is to improve performance on the client side, while increasing scalability on the server side.
+5. **Layered system architecture.** In REST APIs, the calls and responses go through different layers. As a rule of thumb, don’t assume that the client and server applications connect directly to each other. There may be a number of different intermediaries in the communication loop. REST APIs need to be designed so that neither the client nor the server can tell whether it communicates with the end application or an intermediary.
+6. **Code on demand (optional).** REST APIs usually send static resources, but in certain cases, responses can also contain executable code (such as Java applets). In these cases, the code should only run on-demand.
+
+### HTTP methods for Rest API
 
 | HTTP Method | Meaning |
 |:--|:--|
@@ -244,7 +259,7 @@ Introduces resources and allows to make requests to individual URIs (still all t
 Level One design is not RESTful, yet it is organizing the API in the direction of becoming one.
 
 #### Level 2 : HTTP verbs
-The system starts making use of HTTP Verbs. This allows to further specialize the resource and thus narrow down the functionality of each individual operation with the service. The principle separation at this level consists in splitting a given resource into two – one request for obtaining data only (GET), the other for modifying the data (POST). Further granularization is also possible. GET requests only fetch data, POST/PUT calls introduce new and update existing data, DELETE requests remove or otherwise invalidate previous actions. One drawback of providing a distributed service with more than GET and POST per resource might be growing complication of using such a system.
+The system starts making use of HTTP Verbs. This allows to further specialize the resource and thus narrow down the functionality of each individual operation with the service. The principle separation at this level consists in splitting a given resource into two — one request for obtaining data only (GET), the other for modifying the data (POST). Further granularization is also possible. GET requests only fetch data, POST/PUT calls introduce new and update existing data, DELETE requests remove or otherwise invalidate previous actions. One drawback of providing a distributed service with more than GET and POST per resource might be growing complication of using such a system.
 
 #### Level 3 : Hypermedia controls
 The last level introduces the hypermedia representation. Also called HATEOAS (Hypermedia As The Engine of Application State), these are elements embedded in the response messages of resources which allow to establish a relation between individual data entities returned from and pass to the APIs. For instance, a GET request to a hotel reservation system might return a number of available rooms along with hypermedia links (these would be html hyperlink controls in the early days of the model) allowing to book specific rooms.
@@ -283,17 +298,20 @@ The header approach is one that provides more granularity in serving up the requ
 However, it's buried in the request object and isn't as transparent as the URI path option. It's also still hard to tell whether 1.0 refers to the version of the endpoint or the API itself.
 
 ## Engineering Excellence
+
 ### Testing. What types of tests exist?
+
 #### Unit tests
 Unit tests are very low level, close to the source of your application. They consist in testing individual methods and functions of the classes, components or modules used by your software. Unit tests are in general quite cheap to automate and can be run very quickly by a continuous integration server.
 
 #### Integration tests
 Integration tests verify that different modules or services used by your application work well together. For example, it can be testing the interaction with the database or making sure that microservices work together as expected. These types of tests are more expensive to run as they require multiple parts of the application to be up and running.
 
-#### Functional tests
-Functional tests focus on the business requirements of an application. They only verify the output of an action and do not check the intermediate states of the system when performing that action.
+#### System tests
+System tests test the developed system as whole. For small apps this may be as simple as running it ad clicking all the buttons.
 
 ## Database
+
 ### What is DB index? How does it work?
 Индексы почти полностью лежат в области физического уровня проектирования базы данных, и реляционная теория их почти не затрагивает.
 
@@ -353,8 +371,6 @@ Functional tests focus on the business requirements of an application. They only
 
 **Искусственный ключ** — ключ, построенный на атрибуте, искусственно добавленном в отношение с единственной целью — гарантированно идентифицировать кортежи отношения.
 
-**Интеллектуальный ключ** — ключ, значения которого не только идентифицируют кортежи отношения, но и несут дополнительную информацию.
-
 **Внешний ключ (FK)** — атрибут (или группа атрибутов) отношения, содержащий в себе копии значений первичного ключа другого отношения.
 
 **Рекурсивный внешний ключ (RFK)** — атрибут (или группа атрибутов) отношения, содержащий в себе копии значений первичного ключа этого же отношения.
@@ -384,7 +400,7 @@ Functional tests focus on the business requirements of an application. They only
 
 **Чтение подтверждённых данных (read committed)** — допускает чтение всех изменений, выполненных самой транзакцией, и только подтверждённых (зафиксированных) изменений, выполненных другими (параллельными) транзакциями.
 
-**Повторяющееся чтение (repeatable read)** — допускает только чтение изменений, выполненных самой транзакцией, а прочитанные ею данные становятся не- доступными для изменения параллельным транзакциям.
+**Повторяющееся чтение (repeatable read)** — допускает только чтение изменений, выполненных самой транзакцией, а прочитанные ею данные становятся недоступными для изменения параллельным транзакциям.
 
 **Снимок (snapshot)** — является частным (более высоким) случаем повторяющегося чтения, поддерживается не всеми СУБД, и допускает только чтение изменений, выполненных самой транзакцией, а прочитанные ею данные остаются доступны для изменения параллельным транзакциям (в этом состоит основное отличие от уровня повторяющегося чтения).
 
@@ -414,10 +430,3 @@ Functional tests focus on the business requirements of an application. They only
 6. Now that `DispatcherServlet` knows which view will render the result, the request’s job is almost over. Its final stop is at the **view implementation** where it delivers the model data.
 7. The **view** will use the model data to render output that will be carried back to the client by the response object
 
-### REST Principles
-1. **Uniform interface.** All API requests for the same resource should look the same, no matter where the request comes from. The REST API should ensure that the same piece of data, such as the name or email address of a user, belongs to only one uniform resource identifier (URI). Resources shouldn’t be too large but should contain every piece of information that the client might need.
-2. **Client-server decoupling.** In REST API design, client and server applications must be completely independent of each other. The only information the client application should know is the URI of the requested resource; it can't interact with the server application in any other ways. Similarly, a server application shouldn't modify the client application other than passing it to the requested data via HTTP.
-3. **Statelessness.** REST APIs are stateless, meaning that each request needs to include all the information necessary for processing it. In other words, REST APIs do not require any server-side sessions. Server applications aren’t allowed to store any data related to a client request.
-4. **Cacheability.** When possible, resources should be cacheable on the client or server side. Server responses also need to contain information about whether caching is allowed for the delivered resource. The goal is to improve performance on the client side, while increasing scalability on the server side.
-5. **Layered system architecture.** In REST APIs, the calls and responses go through different layers. As a rule of thumb, don’t assume that the client and server applications connect directly to each other. There may be a number of different intermediaries in the communication loop. REST APIs need to be designed so that neither the client nor the server can tell whether it communicates with the end application or an intermediary.
-6. **Code on demand (optional).** REST APIs usually send static resources, but in certain cases, responses can also contain executable code (such as Java applets). In these cases, the code should only run on-demand.
