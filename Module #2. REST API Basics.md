@@ -301,14 +301,49 @@ However, it's buried in the request object and isn't as transparent as the URI p
 
 ### Testing. What types of tests exist?
 
-#### Unit tests
+#### Unit Tests
 Unit tests are very low level, close to the source of your application. They consist in testing individual methods and functions of the classes, components or modules used by your software. Unit tests are in general quite cheap to automate and can be run very quickly by a continuous integration server.
 
-#### Integration tests
+#### Integration Tests
 Integration tests verify that different modules or services used by your application work well together. For example, it can be testing the interaction with the database or making sure that microservices work together as expected. These types of tests are more expensive to run as they require multiple parts of the application to be up and running.
 
-#### System tests
+#### System Tests
 System tests test the developed system as whole. For small apps this may be as simple as running it ad clicking all the buttons.
+
+### Unit-testing Best Practices
+
+#### 1. Tests Should Be Fast
+If they’re slow, developers won’t run them as often as they should. That defeats the whole purpose of having a suite of unit tests in the first place, which is to boost the developers’ confidence to make changes to the code. The tests can’t work as the safety net they’re supposed to be if they’re not run often.
+
+Ways of making test faster:
+- make them as simple as possible
+- don’t make them depend on other tests
+- mock external dependencies
+
+#### 2. Tests Should Be Simple
+Cyclomatic complexity is one way of measuring that. Cyclomatic complexity is a code metric that indicates the number of possible execution paths a given method can follow. A piece of code with lower complexity is easier to understand and maintain, which means developers are less likely to introduce bugs when working on it.
+
+#### 3. Test Shouldn’t Duplicate Implementation Logic
+If the same person wrote both the test and the implementation, it’s possible they made the same errors in the two spots. But since the tests mirror the implementation, they might still pass.
+
+#### 4. Tests Should Be Readable
+Test cases double as a form of documentation. And they are the best type of documentation since they’re executable and don’t get out of sync with what they’re documenting. But in order for the team to be able to reap the benefits of these executable specifications, they obviously need to be readable.
+
+#### 5. Tests Should Be Deterministic
+Suppose you have a method `a()`. Then you write a test for it, and the test is passing. If you don’t change `a()`, the test should continue to pass, no matter how many times you run it. The opposite is also true: imagine you go and change the function, and that causes the test to fail. No matter if you run the test one, ten, or a thousand times, it should continue failing until you or someone else goes and fixes the function.
+
+#### 6. Make Sure They’re Part of the Build Process
+It makes sense to automate the whole process of running the tests and taking some action when they fail. So, make sure your build process executes your unit tests and marks the build as broken when the tests fail.
+
+#### 7. Distinguish Between The Many Types of Test Doubles and Use Them Appropriately
+Though many people use the word mock to refer to those mechanisms, that’s not really accurate. The correct generic term for something that replaces a dependency during testing is test double. Test doubles come in different types. To name a few: stubs, spies, and, yes, mocks. It’s important to understand the difference between the different test doubles and use the ones better suited to your current needs.
+
+#### 8. Adopt a Sound Naming Convention for Your Tests
+Naming things is hard, but it pays off. Since tests are also documentation, your tests should have names that reflect the scenario they’re testing.
+
+#### 9. Don’t Couple Your Tests With Implementation Details
+When it comes to unit testing, you should prevent them from becoming too coupled to the internals of the code they’re testing.
+
 
 ## Database
 
