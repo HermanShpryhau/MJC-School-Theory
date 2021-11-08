@@ -341,7 +341,7 @@ Ways of making test faster:
 - mock external dependencies
 
 #### 2. Tests Should Be Simple
-Cyclomatic complexity is one way of measuring that. Cyclomatic complexity is a code metric that indicates the number of possible execution paths a given method can follow. A piece of code with lower complexity is easier to understand and maintain, which means developers are less likely to introduce bugs when working on it.
+A piece of code with lower complexity is easier to understand and maintain, which means developers are less likely to introduce bugs when working on it.
 
 #### 3. Test Shouldn’t Duplicate Implementation Logic
 If the same person wrote both the test and the implementation, it’s possible they made the same errors in the two spots. But since the tests mirror the implementation, they might still pass.
