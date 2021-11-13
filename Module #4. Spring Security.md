@@ -84,13 +84,13 @@ A JWS (the most common type of JWT) contains three parts separated by a dot (`.`
 
 Let’s look at an example JWT:
 
-```json
+```
 eyJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiSm9lIENvZGVyIn0.5dlp7GmziL2QS06sZgK4mtaqv0_xX4oFUuTDh1zHK4U
 ```
 
 Breaking this down into the individual sections we have:
 
-```json
+```
 eyJhbGciOiJIUzI1NiJ9 *# header*.
 eyJuYW1lIjoiSm9lIENvZGVyIn0 *# payload*.
 5dlp7GmziL2QS06sZgK4mtaqv0_xX4oFUuTDh1zHK4U *#signature*
@@ -98,7 +98,7 @@ eyJuYW1lIjoiSm9lIENvZGVyIn0 *# payload*.
 
 Next, each of the first two sections are base64-url decoded:
 
-```json
+```
 {
 	"alg":"HS256" # header
 } 
